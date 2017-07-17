@@ -1,4 +1,5 @@
 # Installation
+
 In order to use TransFlow you must:
  *   1. Clone this repository
         `git clone `
@@ -8,27 +9,27 @@ In order to use TransFlow you must:
  *   4. Install html reporting
         `gem install report_html`
  *   5. If you are interested in to use the assembly modules (1, 2, 3), you must install:
- *   5.1 Read cleaner SeqTrim Next
-        `gem install seqtrimnext`
- *   5.2 Illumina assemblers and related tools (module 1)
-        * [Ray](http://denovoassembler.sourceforge.net/)
-        * [Oases](https://github.com/dzerbino/oases)
-        * [SOAPdenovo Trans](https://sourceforge.net/projects/soapdenovotrans/files/SOAPdenovo-Trans/)
-        * [Minimus2](https://sourceforge.net/projects/amos/files/amos/3.1.0/)
-        * [cd-hit](http://weizhongli-lab.org/cd-hit/)        
- *   5.3 454/Roche assemblers (module 2)
-        * [MIRA4](https://sourceforge.net/projects/mira-assembler/)
-        * [Euler-SR](http://cseweb.ucsd.edu/~ppevzner/software.html)
-        * [CAP3](http://seq.cs.iastate.edu/cap3.html)        
- *   5.2 Merging/combination assemblers (module 3)
-        * [Ray](http://denovoassembler.sourceforge.net/)        
-        * [Minimus2](https://sourceforge.net/projects/amos/files/amos/3.1.0/)
-        * [cd-hit](http://weizhongli-lab.org/cd-hit/)  
-        * [MIRA4](https://sourceforge.net/projects/mira-assembler/)
+	 *  1 Read cleaner SeqTrim Next
+	        `gem install seqtrimnext`
+	 *  2 Illumina assemblers and related tools (module 1)
+        	* [Ray](http://denovoassembler.sourceforge.net/)
+	        * [Oases](https://github.com/dzerbino/oases)
+        	* [SOAPdenovo Trans](https://sourceforge.net/projects/soapdenovotrans/files/SOAPdenovo-Trans/)
+	        * [Minimus2](https://sourceforge.net/projects/amos/files/amos/3.1.0/)
+	        * [cd-hit](http://weizhongli-lab.org/cd-hit/)        
+	 *  3 454/Roche assemblers (module 2)
+	        * [MIRA4](https://sourceforge.net/projects/mira-assembler/)
+        	* [Euler-SR](http://cseweb.ucsd.edu/~ppevzner/software.html)
+	        * [CAP3](http://seq.cs.iastate.edu/cap3.html)        
+	 *  4 Merging/combination assemblers (module 3)
+	        * [Ray](http://denovoassembler.sourceforge.net/)        
+        	* [Minimus2](https://sourceforge.net/projects/amos/files/amos/3.1.0/)
+	        * [cd-hit](http://weizhongli-lab.org/cd-hit/)  
+	        * [MIRA4](https://sourceforge.net/projects/mira-assembler/)
  *   6. The reference and validation modules need:
- *   6.1. Install Full-Lengther next
-        `gem install full_lengther_next`
- *   6.2. Install [BUSCO](http://busco.ezlab.org/) and download the lineage files to BUSCO_DB/ folder
+	 *   1. Install Full-Lengther next
+        	`gem install full_lengther_next`
+	 *   2. Install [BUSCO](http://busco.ezlab.org/) and download the lineage files to BUSCO_DB/ folder
  *   7. Make PATH accesible all the installed software
  *   8. Make PATH accesible the folder scripts
 
