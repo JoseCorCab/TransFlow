@@ -12,20 +12,20 @@ In order to use TransFlow you must:
 	 *  1 Read cleaner SeqTrim Next
 	        `gem install seqtrimnext`
 	 *  2 Illumina assemblers and related tools (module 1)
-        	* a [Ray](http://denovoassembler.sourceforge.net/)
-	        * b [Oases](https://github.com/dzerbino/oases)
-        	* c [SOAPdenovo Trans](https://sourceforge.net/projects/soapdenovotrans/files/SOAPdenovo-Trans/)
-	        * d [Minimus2](https://sourceforge.net/projects/amos/files/amos/3.1.0/)
-	        * e [cd-hit](http://weizhongli-lab.org/cd-hit/)        
+        	* 1 [Ray](http://denovoassembler.sourceforge.net/)
+	        * 2 [Oases](https://github.com/dzerbino/oases)
+        	* 3 [SOAPdenovo Trans](https://sourceforge.net/projects/soapdenovotrans/files/SOAPdenovo-Trans/)
+	        * 4 [Minimus2](https://sourceforge.net/projects/amos/files/amos/3.1.0/)
+	        * 5 [cd-hit](http://weizhongli-lab.org/cd-hit/)        
 	 *  3 454/Roche assemblers (module 2)
-	        * a [MIRA4](https://sourceforge.net/projects/mira-assembler/)
-        	* b [Euler-SR](http://cseweb.ucsd.edu/~ppevzner/software.html)
-	        * c [CAP3](http://seq.cs.iastate.edu/cap3.html)        
+	        * 1 [MIRA4](https://sourceforge.net/projects/mira-assembler/)
+        	* 2 [Euler-SR](http://cseweb.ucsd.edu/~ppevzner/software.html)
+	        * 3 [CAP3](http://seq.cs.iastate.edu/cap3.html)        
 	 *  4 Merging/combination assemblers (module 3)
-	        * a [Ray](http://denovoassembler.sourceforge.net/)        
-        	* b [Minimus2](https://sourceforge.net/projects/amos/files/amos/3.1.0/)
-	        * c [cd-hit](http://weizhongli-lab.org/cd-hit/)  
-	        * d [MIRA4](https://sourceforge.net/projects/mira-assembler/)
+	        * 1 [Ray](http://denovoassembler.sourceforge.net/)        
+        	* 2 [Minimus2](https://sourceforge.net/projects/amos/files/amos/3.1.0/)
+	        * 3 [cd-hit](http://weizhongli-lab.org/cd-hit/)  
+	        * 4 [MIRA4](https://sourceforge.net/projects/mira-assembler/)
  *   6. The reference and validation modules need:
 	 *   1. Install Full-Lengther next
         	`gem install full_lengther_next`
