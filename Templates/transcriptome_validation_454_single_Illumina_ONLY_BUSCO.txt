@@ -1,0 +1,68 @@
+
+#= Validation Autoflow transcriptoma de novo Castanea sativa
+############################################
+
+#= Validation of 'de novo' transcriptome assembly for Illumina and 454 single-end reads.
+#= This workflow has been designed to be used in plants.
+  
+
+###############################################
+#############################################################################################################################
+#####  METRICS BLOCK  ####################################################################################
+################################################################################################################
+###############################################################################################################
+calculating_BUSCO_metric_[JobRegExp:primary|scaffolding|join|reduce|merge|MIRA|Euler|CAP3|reassembly_454|reassembly_all|reassembling_Illumina|reference|Assembly|remove_illumina_redundancy:-]){
+	#module load busco/2.0
+	ln -s (*)/all_sequences.fasta
+	fasta_standard_renamer.rb all_sequences.fasta
+	ln -s (*)/tracker
+	var_tracker=`cat tracker`       
+	?
+	BUSCO.py -i  all_sequences.fasta_new -l $BUSCO_db_path -o BUSCO_analysis -m tran -f -c [cpu]
+	if [ ! -s run_BUSCO_analysis/short_summary_BUSCO_analysis.txt ] ; then
+		echo "ERROR: BUSCO has failed"
+		exit 1 # Fail
+	else
+		rm -rf run_BUSCO_analysis/hmmer_output run_BUSCO_analysis/translated_proteins
+	fi    
+	grep -r -o 'C:[0-9\.]*\%[S:[0-9\.]*\%,D:[0-9\.]*\%],F:[0-9\.]*\%' run_BUSCO_analysis/short_summary_BUSCO_analysis.txt | sed -r "s|C:([0-9\.]*)\%\[S:[0-9\.]*\%,D:([0-9\.]*)\%],F:([0-9\.]*)\%|$var_tracker\tComplOrtho\t\1\n$var_tracker\tDuplOrtho\t\2\n$var_tracker\tFragOrtho\t\3|g" >> ../metrics
+}
+
+table_report){
+	#module load R/3.3.1
+    echo " !JobRegExp:metric:-!/algo "
+    ?
+    create_metric_table.rb ../metrics  "Name,Program,Task,Kmer,Technology"
+    sed 's/>//g' metric_table.txt -i
+    sed 's/PRE_FLN_//g' metric_table.txt -i
+    ## PCA
+    #####################################
+
+    SUPLEMENTARY_VARS="'`head -n 1 metric_table.txt | cut -f 2,3,4,5|tr "\t" "="|sed "s/=/', '/g"`'"
+    
+   #  Using general vars
+   #  ------------------------------------
+    echo "general vars"
+    echo "-------------"
+    PCA_variables="
+    'Contigs',
+    'Contigs500',
+    'MeanContigLen',
+    'N50',
+    'N90',
+    'Ns',
+    'MeanGapLen',
+    'ComplOrtho',
+    'FragOrtho',
+    'DuplOrtho',
+    'MissAssembl',
+    'chimeras',
+    'DiffProts',
+    'DiffComplProts',
+    'MeanContigCov',
+    'AllTransSize'
+    "
+    factor_analysis.R -d metric_table.txt -l "$SUPLEMENTARY_VARS" -c "$PCA_variables" -o general_pca.pdf > PCA_general_results
+    parse_pca.rb PCA_general_results > PCA_general_results_parsed
+    report_html -t $report_template -d metric_table.txt,PCA_general_results_parsed -o assembly_report
+   }  

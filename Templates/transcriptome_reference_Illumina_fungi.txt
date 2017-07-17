@@ -1,0 +1,122 @@
+
+#= References transcriptome de novo of Castanea sativa
+############################################
+
+#= References for 'de novo' transcriptome assembly for Illumina and 454 single-end reads.
+#= This workflow has been designed to be used with plants.
+#########################################
+#Variables
+############################################
+
+	
+######################################################################################################################################
+######### REFERENCES ################################################################################################################
+###################################################################################################################################
+
+reference_Neurospora){     
+	ln -s $reference/Neurospora_crassa.ASM18292v1.31.cdna.all.fa all_sequences.fasta
+	?
+	echo -e "N.crassa\tref_p\tref_t\tref_k\tref_t" > tracker
+}
+
+reference_Candida){
+	ln -s $reference/Candida_albicans_sc5314.ASM18296v2.31.cdna.all.fa  all_sequences.fasta
+	?
+	echo -e "C.albicans\tref_p\tref_t\tref_k\tref_t" > tracker
+}
+
+
+##############################################################################################################################
+##############################################################################################################################
+#############################################################################################################################
+#####  METRICS BLOCK  ####################################################################################
+################################################################################################################
+###############################################################################################################
+
+FLN_metric_Neurospora){
+#    resources: -s -u 1 -n cal -c 16 -t '2-00:00:00' -m '60gb'
+    ln -s reference_Neurospora)/tracker
+    ?
+    full_lengther_next -s 10.243 -f reference_Neurospora)/all_sequences.fasta -a 's' -z  -g $FLN_DATABASE -c 500 -q 'd' -w [lcpu] -M '$reads/SRR100067_1.fastq.gz,$reads/SRR100067_2.fastq.gz;$reads/ERR229466.fastq.gz'
+
+    if [ ! -s fln_results/summary_stats.txt ] ; then
+        echo "ERROR: full_lengther_next has failed"
+        exit 1 # Fail
+    fi
+
+    #making metric file
+    echo -e "`cat tracker`\tMeanContigCov\t`tail +2 fln_results/coverage_per_transcript.txt | awk '{ if ($2 > 0){ sum += $2; n++} } END { if (n > 0) print sum / n; }'` " >> ../metrics
+    input_seqs=`grep -w "input_seqs" fln_results/summary_stats.txt | cut -f 1`
+    unmapped=`grep -w "unmapped" fln_results/summary_stats.txt | cut -f 1`
+    mapped_contigs=$(($input_seqs - $unmapped))
+    echo -e "`cat tracker`\tContigs\t$mapped_contigs" >> ../metrics
+    input_seqs500=`grep -w "PRE_FLN_sequences_>500" fln_results/summary_stats.txt | cut -f 1`
+    unmapped500=`awk '{if ($2 >= 500) sum +=1} END {print sum}' fln_results/unmapped.txt`
+    mapped_contigs500=$(($input_seqs500 - $unmapped500))
+    echo -e "`cat tracker`\tContigs500\t$mapped_contigs500" >> ../metrics
+
+    fln_absolute_metric=( 'input_seqs' 'PRE_FLN_mean_length' 'longest_unigene' 'PRE_FLN_full_transcriptome_length' 'PRE_FLN_n50' 'PRE_FLN_n90' 'PRE_FLN_indeterminations' 'PRE_FLN_indetermination_mean_length' 'prot_annotated' 'complete' 'coding' 'different_orthologues' 'different_completes' )
+    metric_names=( 'input_seqs' 'MeanContigLen' 'longest_unigene' 'AllTransSize' 'N50' 'N90' 'Ns' 'MeanGapLen' 'prot_annotated' 'complete' 'coding' 'DiffProts' 'DiffComplProts' )
+    position=0
+     for i in "${fln_absolute_metric[@]}"
+     do
+         command=`grep -w "$i" fln_results/summary_stats.txt | cut -f 1`
+         echo -e "`cat tracker`\t${metric_names[$position]}\t$command" >> ../metrics
+        position=$(($position + 1))
+    done
+
+    fln_stats_metric=( 'misassembled' 'chimeras' )
+    metric_names=( 'MissAssembl' 'chimeras' )
+    position=0
+    total=`grep  "prot_annotated" fln_results/summary_stats.txt | cut -f 1`
+    for i in "${fln_stats_metric[@]}"
+    do
+        command=`grep -w "$i" fln_results/summary_stats.txt | cut -f 1`
+        echo -e "`cat tracker`\t${metric_names[$position]}\t`echo "scale=4; $command*100/($total+$command)" | bc`" >> ../metrics
+        position=$(($position + 1))
+    done
+}
+
+FLN_metric_Candida){
+#    resources: -s -u 1 -n cal -c 16 -t '2-00:00:00' -m '60gb'
+    ln -s reference_Candida)/tracker
+    ?
+    full_lengther_next -s 10.243 -f reference_Candida)/all_sequences.fasta -a 's' -z  -g $FLN_DATABASE -c 500 -q 'd' -w [lcpu] -M '$reads/SRR2005826_1.fastq.gz,$reads/SRR2005826_2.fastq.gz;$reads/SRR604746.fastq.gz'
+
+    if [ ! -s fln_results/summary_stats.txt ] ; then
+        echo "ERROR: full_lengther_next has failed"
+        exit 1 # Fail
+    fi
+
+    #making metric file
+    echo -e "`cat tracker`\tMeanContigCov\t`tail +2 fln_results/coverage_per_transcript.txt | awk '{ if ($2 > 0){ sum += $2; n++} } END { if (n > 0) print sum / n; }'` " >> ../metrics
+    input_seqs=`grep -w "input_seqs" fln_results/summary_stats.txt | cut -f 1`
+    unmapped=`grep -w "unmapped" fln_results/summary_stats.txt | cut -f 1`
+    mapped_contigs=$(($input_seqs - $unmapped))
+    echo -e "`cat tracker`\tContigs\t$mapped_contigs" >> ../metrics
+    input_seqs500=`grep -w "PRE_FLN_sequences_>500" fln_results/summary_stats.txt | cut -f 1`
+    unmapped500=`awk '{if ($2 >= 500) sum +=1} END {print sum}' fln_results/unmapped.txt`
+    mapped_contigs500=$(($input_seqs500 - $unmapped500))
+    echo -e "`cat tracker`\tContigs500\t$mapped_contigs500" >> ../metrics
+
+    fln_absolute_metric=( 'input_seqs' 'PRE_FLN_mean_length' 'longest_unigene' 'PRE_FLN_full_transcriptome_length' 'PRE_FLN_n50' 'PRE_FLN_n90' 'PRE_FLN_indeterminations' 'PRE_FLN_indetermination_mean_length' 'prot_annotated' 'complete' 'coding' 'different_orthologues' 'different_completes' )
+    metric_names=( 'input_seqs' 'MeanContigLen' 'longest_unigene' 'AllTransSize' 'N50' 'N90' 'Ns' 'MeanGapLen' 'prot_annotated' 'complete' 'coding' 'DiffProts' 'DiffComplProts' )
+    position=0
+     for i in "${fln_absolute_metric[@]}"
+     do
+         command=`grep -w "$i" fln_results/summary_stats.txt | cut -f 1`
+         echo -e "`cat tracker`\t${metric_names[$position]}\t$command" >> ../metrics
+        position=$(($position + 1))
+    done
+
+    fln_stats_metric=( 'misassembled' 'chimeras' )
+    metric_names=( 'MissAssembl' 'chimeras' )
+    position=0
+    total=`grep  "prot_annotated" fln_results/summary_stats.txt | cut -f 1`
+    for i in "${fln_stats_metric[@]}"
+    do
+        command=`grep -w "$i" fln_results/summary_stats.txt | cut -f 1`
+        echo -e "`cat tracker`\t${metric_names[$position]}\t`echo "scale=4; $command*100/($total+$command)" | bc`" >> ../metrics
+        position=$(($position + 1))
+    done
+}
